@@ -12,6 +12,14 @@
 
 [Nginx安装及配置之Ubuntu](./Nginx/Nginx%E5%AE%89%E8%A3%85%E5%8F%8A%E9%85%8D%E7%BD%AE%E4%B9%8BUbuntu.md)
 
+[Nginx目录介绍](./Nginx/Nginx%E7%9B%AE%E5%BD%95%E4%BB%8B%E7%BB%8D.md)
+
+[Nginx基本运行原理](./Nginx/Nginx%E5%9F%BA%E6%9C%AC%E8%BF%90%E8%A1%8C%E5%8E%9F%E7%90%86.md)
+
+[Nginx中nginx.conf配置解析](./Nginx/Nginx%E4%B8%ADnginx.conf%E9%85%8D%E7%BD%AE%E8%A7%A3%E6%9E%90.md)
+
+
+
 
 ## 3、Docker
 
