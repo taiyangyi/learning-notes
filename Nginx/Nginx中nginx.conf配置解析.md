@@ -1,3 +1,16 @@
+
+**nginx.conf** 配置文件主要分为三个部分：**全局块**、**events 块**、**http 块**。
+
+> **配置语法：**
+
+- 配置文件由指令和指令块构成；
+- 每条指令以分号（`;`）结尾，指令和参数间以空格符分隔；
+- 指令块以大括号 `{}` 将多条指令组织在一起；
+- `include` 语句允许组合多个配置文件以提高可维护性；
+- 使用 `#`添加注释；
+- 使用 `$` 定义变量；
+- 部分指令的参数支持正则表达式
+
 ## 1、nginx.conf 结构说明
 
 ![](../images/nginx/nginx-conf-01.png)
@@ -5,7 +18,7 @@
 
 ### 1.1 全局块
 
-主要设置一些影响 Nginx 服务器整体运行的配置指令。如：`worker_processes  1;` ，`worker_processes` 值越大，可以支持更多的并发链接。设置 Nginx 使用的工作进程数，通常与服务器的 CPU 核心数相匹配。
+**全局块** 设置一些影响 Nginx 服务器整体运行的配置指令。主要包括配置运行 Nginx 服务器的用户（组）、允许生成的 `worker process` 数，进程 `PID` 存放路径、日志存放路径和类型以及配置文件的引入等。如：`worker_processes  1;` ，`worker_processes` 值越大，可以支持更多的并发链接。设置 Nginx 使用的工作进程数，通常与服务器的 `CPU` 核心数相匹配。
 
 ```
 # user: 指定运行 Nginx 工作进程的用户和组，默认为 nobody 或 www-data。
@@ -25,7 +38,7 @@ worker_processes  1;
 
 ### 1.2 events 块
 
-`events` 块涉及的指令主要影响 Nginx 服务器与用户的网络连接。
+**events 块** 涉及的指令主要影响 Nginx 服务器与用户的网络连接。
 
 ```
 events {
@@ -36,10 +49,14 @@ events {
 
 ### 1.3 http 块
 
-`http` 块包括 `http 全局块`和 `server 块`，是服务器配置中最频繁的部分，包括配置代理、缓存、日志定义等绝大多数功能。
+**http 块** 包括 `http 全局块`和 `server 块`，是服务器配置中最频繁的部分，包括配置代理、缓存、日志定义等绝大多数功能。
 
 - `server 块` :  配置虚拟主机的相关参数；
 - `location 块` :  配置请求的路由规则，以及路由规则对应的处理逻辑。
+
+#### 1.3.1 http 全局块
+
+**http 全局块** 配置的指令包括文件引入、MIME 类型定义、自定义日志（路径、格式）、连接超时时间、压缩功能等。
 
 ```
 http {
@@ -69,99 +86,68 @@ http {
 
     # gzip 压缩功能，默认处于开启状态
     #gzip  on;
+}
+```
 
-    # 网站配置区域，一个 server 指一个虚拟主机 vhost
-    server {
-        # 默认监听80端口
-        listen       80;
-        # 提供服务的域名主机名，域名或IP 如：baidu.com www.baidu.com 192.168.1.110
-        server_name  localhost;
+#### 1.3.2 server 块
 
-        #charset koi8-r;
+每个 **http 块** 可以包括多个 **server 块**，**server 块** 就相当于一个虚拟主机。其中每个 **server 块** 由 **server 全局块** 和 多个**location 块** （）组成。**location 块**主要作用是基于 Nginx 服务器接收到的请求字符串（例如 server_name/uri-string），对虚拟主机名称 （也可以是 IP 别名）之外的字符串（例如 前面的 /uri-string）进行匹配，对特定的请求进行处理。地址定向、数据缓存和应答控制等功能，还有许多第三方模块的配置也在这里进行。从用户视角来看，虚拟主机和一台独立的硬件主机概念是完全一致的，该技术的产生是为了 节省互联网服务器硬件成本。
 
-        #access_log  logs/host.access.log  main;
+```
+# 网站配置区域，一个 server 指一个虚拟主机 vhost
+server {
+    # 默认监听80端口
+    listen       80;
+    # 提供服务的域名主机名，域名或IP，支持通配符。 如：*.baidu.com www.baidu.com 192.168.1.110 www.baidu.*
+    server_name  localhost;
 
-        # location 用于根据客户端请求的 URI（统一资源标识符）来匹配请求并执行相应的操作，如提供静态文件服务、代理请求到后端服务器、重定向等
-        location / {
-            # root 代表根目录，这里指的是 /usr/local/nginx/html 目录下
-            # html 是一个目录名，它相对于 Nginx 安装目录（或在配置文件中通过 alias 指令指定的其他基路径）的相对路径。
-            root   html;
-            # 默认访问的文件
-            index  index.html index.htm;
-        }
+    #charset koi8-r;
 
-        #error_page  404              /404.html;
+    #access_log  logs/host.access.log  main;
 
-        # redirect server error pages to the static page /50x.html
-        #
-        # error_page 指服务器端发生错误，比如返回500 502 503 504时，跳转到/50x.html文件。
-        # http://example.com/50x.html，但是上面的location /默认没有指定该文件，所以下面的location = /50x.html 
-        # 判断后会在html目录找该文件。
-        error_page   500 502 503 504  /50x.html;
-        location = /50x.html {
-            root   html;
-        }
-
-        # proxy the PHP scripts to Apache listening on 127.0.0.1:80
-        #
-        #location ~ \.php$ {
-        #    proxy_pass   http://127.0.0.1;
-        #}
-
-        # pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000
-        #
-        #location ~ \.php$ {
-        #    root           html;
-        #    fastcgi_pass   127.0.0.1:9000;
-        #    fastcgi_index  index.php;
-        #    fastcgi_param  SCRIPT_FILENAME  /scripts$fastcgi_script_name;
-        #    include        fastcgi_params;
-        #}
-
-        # deny access to .htaccess files, if Apache's document root
-        # concurs with nginx's one
-        #
-        #location ~ /\.ht {
-        #    deny  all;
-        #}
+    # location 用于根据客户端请求的 URI（统一资源标识符）来匹配请求并执行相应的操作，如提供静态文件服务、代理请求到后端服务器、重定向等
+    location / {
+        # root 代表根目录，这里指的是 /usr/local/nginx/html 目录下
+        # html 是一个目录名，它相对于 Nginx 安装目录（或在配置文件中通过 alias 指令指定的其他基路径）的相对路径。
+        root   html;
+        # 默认访问的文件
+        index  index.html index.htm;
     }
 
+    #error_page  404              /404.html;
 
-    # another virtual host using mix of IP-, name-, and port-based configuration
+    # redirect server error pages to the static page /50x.html
     #
-    #server {
-    #    listen       8000;
-    #    listen       somename:8080;
-    #    server_name  somename  alias  another.alias;
+    # error_page 指服务器端发生错误，比如返回500 502 503 504时，跳转到/50x.html文件。
+    # http://example.com/50x.html，但是上面的location /默认没有指定该文件，所以下面的location = /50x.html 
+    # 判断后会在html目录找该文件。
+    error_page   500 502 503 504  /50x.html;
+    location = /50x.html {
+        root   html;
+    }
 
-    #    location / {
-    #        root   html;
-    #        index  index.html index.htm;
-    #    }
+    # proxy the PHP scripts to Apache listening on 127.0.0.1:80
+    #
+    #location ~ \.php$ {
+    #    proxy_pass   http://127.0.0.1;
     #}
 
-
-    # HTTPS server
+    # pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000
     #
-    #server {
-    #    listen       443 ssl;
-    #    server_name  localhost;
-
-    #    ssl_certificate      cert.pem;
-    #    ssl_certificate_key  cert.key;
-
-    #    ssl_session_cache    shared:SSL:1m;
-    #    ssl_session_timeout  5m;
-
-    #    ssl_ciphers  HIGH:!aNULL:!MD5;
-    #    ssl_prefer_server_ciphers  on;
-
-    #    location / {
-    #        root   html;
-    #        index  index.html index.htm;
-    #    }
+    #location ~ \.php$ {
+    #    root           html;
+    #    fastcgi_pass   127.0.0.1:9000;
+    #    fastcgi_index  index.php;
+    #    fastcgi_param  SCRIPT_FILENAME  /scripts$fastcgi_script_name;
+    #    include        fastcgi_params;
     #}
 
+    # deny access to .htaccess files, if Apache's document root
+    # concurs with nginx's one
+    #
+    #location ~ /\.ht {
+    #    deny  all;
+    #}
 }
 ```
 
