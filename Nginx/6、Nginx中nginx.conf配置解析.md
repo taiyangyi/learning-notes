@@ -74,7 +74,7 @@ http {
     #access_log  logs/access.log  main;
 
     # 开启高效文件传输模式，默认是开启状态（on），将 tcp_nopush 和 tcp_nodelay 两个指令设置为 on 用于防止网络阻塞；
-    # 使用linux的sendfi1e(socket，file，1en)高效网络传输，也就是数据0拷贝
+    # 使用linux的sendfi1e(socket，file，1en)高效网络传输，数据0拷贝
     sendfile        on;
     #tcp_nopush     on;
 
@@ -98,7 +98,7 @@ http {
 server {
     # 默认监听80端口
     listen       80;
-    # 提供服务的域名主机名，域名或IP，支持通配符。 如：*.baidu.com www.baidu.com 192.168.1.110 www.baidu.*
+    # 域名主机名，域名或IP，支持通配符。 如：*.baidu.com www.baidu.com 192.168.1.110 www.baidu.*
     server_name  localhost;
 
     #charset koi8-r;
@@ -106,9 +106,10 @@ server {
     #access_log  logs/host.access.log  main;
 
     # location 用于根据客户端请求的 URI（统一资源标识符）来匹配请求并执行相应的操作，如提供静态文件服务、代理请求到后端服务器、重定向等
+    # 如：www.baidu.com/person/index.html, 那么uri指的是域名后面的一段 /person/index.html
     location / {
-        # root 代表根目录，这里指的是 /usr/local/nginx/html 目录下
-        # html 是一个目录名，它相对于 Nginx 安装目录（或在配置文件中通过 alias 指令指定的其他基路径）的相对路径。
+        # root  
+        # html 相对路径，相对于 Nginx 安装目录相对路径，在本文nginx的安装路径 /usr/local/nginx/
         root   html;
         # 默认访问的文件
         index  index.html index.htm;
