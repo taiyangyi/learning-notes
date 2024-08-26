@@ -54,3 +54,4 @@
 ## 其他
 
 [iTerm终端快捷指令](./Other/iTerm%E7%BB%88%E7%AB%AF%E5%BF%AB%E6%8D%B7%E6%8C%87%E4%BB%A4.md)
+[使用Scrcpy将Android设备投屏到电脑显示器上](./Other/%E4%BD%BF%E7%94%A8Scrcpy%E5%B0%86Android%E8%AE%BE%E5%A4%87%E6%8A%95%E5%B1%8F%E5%88%B0%E7%94%B5%E8%84%91%E6%98%BE%E7%A4%BA%E5%99%A8%E4%B8%8A.md)
