@@ -1,24 +1,22 @@
-## 1、介绍
+## 一、介绍
 
 `bxcodec/faker` 是 Go 语言中造数据利器的第三方库，它非常适用于开发过程中需要填充数据库、创建测试数据。可以生成各种类型的假数据，包括字符串、数字、日期、布尔值、地址、姓名、邮箱、手机号、身份证号等。
 
-## 2、安装
+## 二、安装并引入包
 
 ```
 go get github.com/bxcodec/faker/v3
 ```
 
-## 3、引入包
-
 ```
 import "github.com/bxcodec/faker/v3"
 ```
 
-## 4、生成假数据
+## 三、生成假数据
 
-### 4.1 使用 faker 提供的各种函数生成假数据
+### 3.1 使用 faker 提供的各种函数生成假数据
 
-```
+```go
 package main
 
 import (
@@ -70,7 +68,11 @@ func main() {
 
 }
 
-// OUTPUT:
+```
+
+输入结果：
+
+```go
 // 生成的中文姓名： 公鸿德
 // 生成的姓名： Lady Audie Reynolds
 // 生成的邮箱地址： KpmPJgl@LGdKqxc.com
@@ -86,9 +88,9 @@ func main() {
 // 生成UUID： 8369bbc3e1944a1aa871dc51228ed1e
 ```
 
-### 4.2 创建一个结构体并使用 faker 填充数据
+### 3.2 创建一个结构体并使用 faker 填充数据
 
-```
+```go
 package main
 
 import (
@@ -132,9 +134,14 @@ func main() {
 
 	fmt.Printf("使用 faker 生成数据：%+v\n", _person)
 }
+```
 
-// 结构体不加标签的情况下，生成的是随机数据
-//使用 faker 生成数据：{Name:RaBpPTROBtlhQniRnZAOEiZCf ChineseName:kjMwmcaZXiEJujSWwgfCrbbJi Age:58 Gender:sFChOFrrNVBMLChsTZHVHrMnJ Email:pscrGGDfMxuRcAjWQgkMlirls}
-// 结构体加标签的情况下，生成的是符合标签要求的数据
+输出结果：
+
+```go
+
+结构体不加标签的情况下，生成的是随机数据
+// 使用 faker 生成数据：{Name:RaBpPTROBtlhQniRnZAOEiZCf ChineseName:kjMwmcaZXiEJujSWwgfCrbbJi Age:58 Gender:sFChOFrrNVBMLChsTZHVHrMnJ Email:pscrGGDfMxuRcAjWQgkMlirls}
+结构体加标签的情况下，生成的是符合标签要求的数据
 // 使用 faker 生成数据：{Name:Mrs. Caleigh Miller ChineseName:欧阳鸿朗 Age:11 Gender:Male Email:cEFZfXy@xNgWDUE.net}
 ```
